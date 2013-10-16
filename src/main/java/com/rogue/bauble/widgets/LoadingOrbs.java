@@ -1,7 +1,6 @@
 package com.rogue.bauble.widgets;
 
 import android.opengl.Matrix;
-import android.util.FloatMath;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -16,6 +15,8 @@ import com.rogue.unipoint.FloatPoint2D;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.commons.configuration.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Widget displaying rotating orbs with an optional progress message
@@ -24,8 +25,8 @@ import org.apache.commons.configuration.Configuration;
  * @author R. Matt McCann
  */
 public class LoadingOrbs implements Renderable, Stateful {
-    /** Whether or not the loading orbs have been started. */
-    private boolean isStarted = false;
+    /** Interface for logging events. */
+    private static final Logger logger = LoggerFactory.getLogger("LoadingOrbs");
     
     /** Used to add/remove this object from the pub/sub bus. */
     private final EventBus notifier;
@@ -40,7 +41,7 @@ public class LoadingOrbs implements Renderable, Stateful {
     private float orbSpacing;
     
     /** Rendering position of the loading orbs widget. */
-    private FloatPoint2D position = new FloatPoint2D();
+    private FloatPoint2D position = new FloatPoint2D(0, 0);
     
     /** Rotational position of the primary orb in degrees. */
     private float rotationPos;
@@ -52,7 +53,7 @@ public class LoadingOrbs implements Renderable, Stateful {
     private final SimpleTexturedShader shader;
     
     /** Rendering size of the loading orbs widget. */
-    private FloatPoint2D size = new FloatPoint2D();
+    private FloatPoint2D size = new FloatPoint2D(1, 1);
     
     /** Guice injectable constructor. */
     @Inject
@@ -64,7 +65,7 @@ public class LoadingOrbs implements Renderable, Stateful {
         this.numOrbs = config.getInt("LoadingOrbs.NumOrbs", 9);
         this.orb = checkNotNull(orb);
         this.orbSpacing = config.getFloat("LoadingOrbs.OrbSpacing", 30);
-        this.rotationPeriod = config.getFloat("LoadingOrbs.RotationPeriod", 3);
+        this.rotationPeriod = config.getFloat("LoadingOrbs.RotationPeriod", 1);
         this.shader = checkNotNull(shader);
     }
     
@@ -88,15 +89,15 @@ public class LoadingOrbs implements Renderable, Stateful {
         float distanceMoved = 360.0f / gameTick.getTicksPerSecond();
         distanceMoved /= rotationPeriod;
         
-        rotationPos += distanceMoved;
-        if (rotationPos > 360) rotationPos -= 360;
+        float newRotationPos = rotationPos + distanceMoved;
+        if (newRotationPos > 360) newRotationPos -= 360;
+        
+        rotationPos = newRotationPos;
     }
     
     /** {@inheritDocs} */
     @Override
     public void render(MVP mvp) {
-        checkState(isStarted, "You must call start() before rendering!");
-        
         float[] modelSpace = mvp.peekCopyM();
         
         shader.activate(); // Turn on our shader
@@ -108,6 +109,7 @@ public class LoadingOrbs implements Renderable, Stateful {
         
         // Render each of the loading orbs
         for (int orbIter = 0; orbIter < numOrbs; orbIter++) {
+            logger.info("Rendering orb " + orbIter + "...");
             float angularOffset     = rotationPos - orbIter * orbSpacing; 
             float largestOrbSize    = 0.1f;
             float orbSize           = largestOrbSize * (float) Math.pow(0.85f, orbIter);
@@ -129,20 +131,24 @@ public class LoadingOrbs implements Renderable, Stateful {
         mvp.popM();
     }
     
+    public void setPosition(FloatPoint2D position) {
+        this.position = checkNotNull(position);
+    }
+    
+    public void setSize(FloatPoint2D size) {
+        this.size = checkNotNull(size);
+    }
+    
     /** {@inheritDocs} */
     @Override
     public void start() {
         rotationPos = 0.0f;
         notifier.register(this);
-        
-        isStarted = true;
     }
     
     /** {@inheritDocs} */
     @Override
     public void stop() {
-        isStarted = false;
-        
         notifier.unregister(this);
     }
 }
