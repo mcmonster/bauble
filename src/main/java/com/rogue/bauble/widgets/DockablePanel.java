@@ -43,7 +43,7 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
     private Point2D contentPos;
     
     /** Width of the content area. */
-    private final float contentWidth = 0.7825f;
+    private final float contentWidth = 0.79f;
     
     /** Used to compensate for the screen's aspect ratio. */
     private final Device device;
@@ -115,7 +115,7 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
         logger.info("Retracted:  " + xPosRetracted);
         logger.info("Expanded:   " + xPosExpanded);
         
-        borderWidth = (float) tabSize.getX() * (8.0f / 32.0f);
+        borderWidth = (float) tabSize.getX() / 2;
         position = new Point2D(xPosRetracted, 0.0f);
     }
     
