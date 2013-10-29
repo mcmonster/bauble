@@ -3,6 +3,7 @@ package com.rogue.bauble.graphics.text;
 import android.graphics.Paint;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import com.rogue.bauble.graphics.Color;
 import com.rogue.bauble.properties.Renderable;
 import com.rogue.unipoint.Point2D;
 
@@ -15,8 +16,11 @@ public abstract class GlyphString implements Renderable {
     /** Alignment of the text inside the bitmap. */
     private Paint.Align alignment = Paint.Align.CENTER;
     
+    /** Color of the text. */
+    private Color color = Color.BLACK;
+    
     /** Rendering height of the text. */
-    private float height;
+    private float height = 1.0f;
     
     /** Opacity of the string. */
     private float opacity = 1.0f;
@@ -32,8 +36,12 @@ public abstract class GlyphString implements Renderable {
     
     public Paint.Align getAlignment() {
         return alignment;
-    }
+    }    
     
+    public Color getColor() {
+        return color;
+    }
+
     public float getHeight() { 
         return height;
     }
@@ -59,6 +67,17 @@ public abstract class GlyphString implements Renderable {
         
         // If the text has already been rendered
         if ((getText() != null) && (alignment != oldAlignment)) {
+            updateRendering();
+        }
+    }
+    
+    public void setColor(Color color) {
+        Color oldColor = this.color;
+        
+        this.color = checkNotNull(color);
+        
+        // If the text has already een rendered
+        if ((getText() != null) && (color != oldColor)) {
             updateRendering();
         }
     }

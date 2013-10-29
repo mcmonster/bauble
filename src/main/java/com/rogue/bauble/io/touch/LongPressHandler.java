@@ -1,7 +1,7 @@
 package com.rogue.bauble.io.touch;
 
-import com.rogue.unipoint.Point2D;
-
+import com.rogue.bauble.graphics.MVP;
+import com.rogue.unipoint.FloatPoint2D;
 
 /**
  * Handles user input long press events.
@@ -12,8 +12,9 @@ public interface LongPressHandler {
     /**
      * Handles the long press event.
      * 
+     * @param transformationSpace Current view-space transformations.
      * @param pressLocation Location in screen coordinates where the long press occurred.
      * @return Whether or not the long press event was handled.
      */
-    boolean handleLongPress(final Point2D pressLocation);
+    boolean handleLongPress(MVP transformationSpace, FloatPoint2D pressLocation);
 }

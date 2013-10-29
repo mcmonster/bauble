@@ -10,7 +10,7 @@ import com.rogue.bauble.device.Device;
 import com.rogue.bauble.graphics.MVP;
 import com.rogue.bauble.io.touch.PressTimer;
 import com.rogue.bauble.misc.PointHelper;
-import com.rogue.unipoint.Point2D;
+import com.rogue.unipoint.FloatPoint2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class ProxyView extends GLSurfaceView {
     private boolean isDragAction = false;
     
     /** Last location touched on the screen. Used for calculating gesture vectors. */
-    private Point2D lastTouchLocation;
+    private FloatPoint2D lastTouchLocation;
     
     /** Interface for logging events. */
     private static final Logger logger = LoggerFactory.getLogger("ProxyView");
@@ -86,7 +86,7 @@ public class ProxyView extends GLSurfaceView {
     /** {@inheritDoc} */
     @Override
     public synchronized final boolean onTouchEvent(final MotionEvent event) {
-        Point2D touchLocation = PointHelper.normalize(device, event);
+        FloatPoint2D touchLocation = PointHelper.normalize(device, event);
         
         // Check if a scale gesture occurred
         zoomGestureDetector.onTouchEvent(event);
@@ -96,7 +96,9 @@ public class ProxyView extends GLSurfaceView {
                 lastTouchLocation = touchLocation;
                 isDragAction = false;
                 
-                pressTimer = new PressTimer(renderer, System.currentTimeMillis(), touchLocation);
+                pressTimer = new PressTimer(renderer, System.currentTimeMillis(),
+                        touchLocation.scaleXBy(1 / device.getWidth())
+                                     .scaleYBy(1 / device.getHeight()));
                 new Thread(pressTimer).start();
                 
                 break;
@@ -110,7 +112,7 @@ public class ProxyView extends GLSurfaceView {
                                              .scaleYBy(1 / device.getHeight()));
                     }
                     
-                    Point2D moveVector = touchLocation.subtract(lastTouchLocation);
+                    FloatPoint2D moveVector = touchLocation.subtract(lastTouchLocation);
                     lastTouchLocation = touchLocation;
                     
                     if (isDragAction) {

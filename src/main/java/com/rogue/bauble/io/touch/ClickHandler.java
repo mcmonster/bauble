@@ -1,7 +1,7 @@
 package com.rogue.bauble.io.touch;
 
 import com.rogue.bauble.graphics.MVP;
-import com.rogue.unipoint.Point2D;
+import com.rogue.unipoint.FloatPoint2D;
 
 
 /**
@@ -17,5 +17,5 @@ public interface ClickHandler {
      * @param clickLocation Location in screen coordinates where the click occurred.
      * @return Whether or not the click event was handled.
      */
-    boolean handleClick(MVP transformationSpace, final Point2D clickLocation);
+    boolean handleClick(MVP transformationSpace, final FloatPoint2D clickLocation);
 }

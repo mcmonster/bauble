@@ -1,7 +1,7 @@
 package com.rogue.bauble.io.touch;
 
 import com.rogue.bauble.graphics.MVP;
-import com.rogue.unipoint.Point2D;
+import com.rogue.unipoint.FloatPoint2D;
 
 /**
  * Handles user input drag events.
@@ -17,7 +17,7 @@ public interface DragHandler {
      * coordinates
      * @return Whether or not the event was handled.
      */
-    boolean handlePickUp(MVP transformationSpace, final Point2D touchLocation);
+    boolean handlePickUp(MVP transformationSpace, final FloatPoint2D touchLocation);
     
     /**
      * Handles the continuing drag event.
@@ -26,7 +26,7 @@ public interface DragHandler {
      * normalized coordinates
      * @return Whether or no the event was handled.
      */
-    boolean handleDrag(final Point2D moveVector);
+    boolean handleDrag(final FloatPoint2D moveVector);
     
     /**
      * Handles the termination of a drag gesture.
@@ -35,5 +35,5 @@ public interface DragHandler {
      * normalized coordinates.
      * @return Whether or not the event was handled.
      */
-    boolean handleDrop(final Point2D dropLocation);
+    boolean handleDrop(final FloatPoint2D dropLocation);
 }

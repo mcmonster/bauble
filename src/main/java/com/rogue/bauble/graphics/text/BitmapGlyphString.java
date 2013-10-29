@@ -5,7 +5,6 @@ import android.opengl.Matrix;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.inject.Inject;
 import com.rogue.bauble.ProxyView;
-import com.rogue.bauble.graphics.Color;
 import com.rogue.bauble.graphics.MVP;
 import com.rogue.bauble.graphics.shaders.SimpleTexturedShader;
 import com.rogue.bauble.graphics.textures.TextureFactory;
@@ -19,9 +18,6 @@ import com.rogue.bauble.misc.Constants;
 public class BitmapGlyphString extends GlyphString {
     /** Dimensions of the texture. */
     private final float[] aspectRatio = new float[1];
-    
-    /** Color of the text. */
-    private Color color = Color.BLACK;
     
     /** Handle of the raw texture. */
     private int rawTextureHandle = -1;
@@ -87,10 +83,6 @@ public class BitmapGlyphString extends GlyphString {
             shader.draw();
         }
     }
-    
-    public void setColor(Color color) {
-        this.color = checkNotNull(color);
-    }
 
     /** {@inheritDocs} */
     @Override
@@ -105,7 +97,7 @@ public class BitmapGlyphString extends GlyphString {
                     GLES20.glDeleteTextures(numTextures, new int[] {rawTextureHandle}, Constants.NO_OFFSET);
                 }
                 
-                rawTextureHandle = textureFactory.texturizeText(text, color,
+                rawTextureHandle = textureFactory.texturizeText(text, getColor(),
                         getAlignment(), 60.0f, aspectRatio);
             }
         });

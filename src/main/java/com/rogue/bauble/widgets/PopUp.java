@@ -1,15 +1,12 @@
 package com.rogue.bauble.widgets;
 
-import android.opengl.Matrix;
 import static com.google.common.base.Preconditions.*;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.rogue.bauble.graphics.MVP;
+import com.rogue.bauble.graphics.RenderableObject;
 import com.rogue.bauble.graphics.shaders.SimpleTexturedShader;
 import com.rogue.bauble.graphics.textures.Texture;
-import com.rogue.bauble.misc.Constants;
-import com.rogue.bauble.properties.Renderable;
-import com.rogue.unipoint.FloatPoint2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,21 +15,15 @@ import org.slf4j.LoggerFactory;
  * 
  * @author R. Matt McCann
  */
-public class PopUp implements Renderable {
+public class PopUp extends RenderableObject {
     /** Texture of the drop shadow background. */
     private final Texture dropShadow;
     
     /** Interface for logging events. */
     private static final Logger logger = LoggerFactory.getLogger("PopUp");
-    
-    /** Rendering position of the pop-up. */
-    private FloatPoint2D position = new FloatPoint2D(0, 0);
-    
+
     /** Used to draw the pop-up. */
     private final SimpleTexturedShader shader;
-    
-    /** Rendering size of the pop-up. */
-    private FloatPoint2D size = new FloatPoint2D(1, 1);
     
     /** Guice injectable constructor. */
     @Inject
@@ -46,38 +37,21 @@ public class PopUp implements Renderable {
     public interface PopUpFactory {
         PopUp create();
     }
-    
+
     /** {@inheritDocs} */
     @Override
-    public void render(MVP mvp) {
-        float[] modelSpace = mvp.peekCopyM();
-        
-        // Move into pop-up space
-        Matrix.translateM(modelSpace, Constants.NO_OFFSET, position.getX(),
-                position.getY(), 0);
-        Matrix.scaleM(modelSpace, Constants.NO_OFFSET, size.getX(), size.getY(), 1);
-        
+    public final void renderExt(MVP mvp) {
         // Render the drop-shadow background
         logger.info("Rendering drop-shadow background...");
         shader.activate();
-        shader.setMVPMatrix(mvp.collapseM(modelSpace));
+        shader.setMVPMatrix(mvp.collapse());
         shader.setTexture(dropShadow.getHandle());
         shader.draw();
         
         // Render the pop-up contents
-        mvp.pushM(modelSpace);
-        renderExt(mvp);
-        mvp.popM();
+        renderPopUpExt(mvp);
     }
 
     /** Interface for extending classes to render the pop-up contents. */
-    protected void renderExt(MVP mvp) { }
-    
-    public void setPosition(FloatPoint2D position) {
-        this.position = checkNotNull(position);
-    }
-    
-    public void setSize(FloatPoint2D size) {
-        this.size = checkNotNull(size);
-    }
+    protected void renderPopUpExt(MVP mvp) { }
 }

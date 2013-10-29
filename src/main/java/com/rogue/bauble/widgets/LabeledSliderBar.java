@@ -17,6 +17,7 @@ import com.rogue.bauble.io.touch.DragHandler;
 import com.rogue.bauble.io.touch.InputHelper;
 import com.rogue.bauble.misc.Constants;
 import com.rogue.bauble.properties.Renderable;
+import com.rogue.unipoint.FloatPoint2D;
 import com.rogue.unipoint.Point2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,12 +126,8 @@ public class LabeledSliderBar implements ClickHandler, DragHandler, Renderable {
     
     /** {@inheritDocs} */
     @Override
-    public boolean handleClick(MVP transformationSpace, Point2D clickLocation) {
-        Point2D minusSpacePos;
-        Point2D minusSpaceSize;
+    public boolean handleClick(MVP transformationSpace, FloatPoint2D clickLocation) {
         float[] modelSpace = transformationSpace.peekCopyM();
-        Point2D plusSpacePos;
-        Point2D plusSpaceSize;
         float[] transformationMatrix;
         
         // Move into labeled slider bar space
@@ -143,12 +140,9 @@ public class LabeledSliderBar implements ClickHandler, DragHandler, Renderable {
         Matrix.translateM(modelSpace, Constants.NO_OFFSET, -0.5f + buttonSize / 2, 0, 0);
         Matrix.scaleM(modelSpace, Constants.NO_OFFSET, buttonSize, buttonSize, 1);
         transformationMatrix = transformationSpace.collapseM(modelSpace);
-        minusSpacePos = new Point2D(transformationMatrix[12], transformationMatrix[13]);
-        minusSpaceSize = new Point2D(transformationMatrix[0], transformationMatrix[5]);
 
         // If the minus button is clicked
-        if (InputHelper.isTouched(minusSpacePos, (float) minusSpaceSize.getX(), 
-                (float) minusSpaceSize.getY(), clickLocation)) {
+        if (InputHelper.isTouched(transformationMatrix, clickLocation)) {
             currentValue = updatedValueHandler.handleDecreasedValue(currentValue, valueLabel);
             updateSliderPosition();
             transformationSpace.popM();
@@ -160,12 +154,9 @@ public class LabeledSliderBar implements ClickHandler, DragHandler, Renderable {
         Matrix.translateM(modelSpace, Constants.NO_OFFSET, 0.5f - buttonSize / 2, 0, 0);
         Matrix.scaleM(modelSpace, Constants.NO_OFFSET, buttonSize, buttonSize, 1);
         transformationMatrix = transformationSpace.collapseM(modelSpace);
-        plusSpacePos = new Point2D(transformationMatrix[12], transformationMatrix[13]);
-        plusSpaceSize = new Point2D(transformationMatrix[0], transformationMatrix[5]);
         
         // If the plus button is clicked
-        if (InputHelper.isTouched(plusSpacePos, (float) plusSpaceSize.getX(),
-                (float) plusSpaceSize.getY(), clickLocation)) {
+        if (InputHelper.isTouched(transformationMatrix, clickLocation)) {
             currentValue = updatedValueHandler.handleIncreasedValue(currentValue, valueLabel);
             updateSliderPosition();
             return true;
@@ -176,10 +167,8 @@ public class LabeledSliderBar implements ClickHandler, DragHandler, Renderable {
 
     /** {@inheritDocs} */
     @Override
-    public boolean handlePickUp(MVP transformationSpace, Point2D touchLocation) {
+    public boolean handlePickUp(MVP transformationSpace, FloatPoint2D touchLocation) {
         float[] modelSpace = transformationSpace.peekCopyM();
-        Point2D sliderPos;
-        Point2D sliderSize;
         float[] transformationMatrix;
 
         // Move into labeled slider bar space
@@ -191,22 +180,19 @@ public class LabeledSliderBar implements ClickHandler, DragHandler, Renderable {
         Matrix.translateM(modelSpace, Constants.NO_OFFSET, sliderPosition, 0, 0);
         Matrix.scaleM(modelSpace, Constants.NO_OFFSET, buttonSize, buttonSize, 1);
         transformationMatrix = transformationSpace.collapseM(modelSpace);
-        sliderPos = new Point2D(transformationMatrix[12], transformationMatrix[13]);
-        sliderSize = new Point2D(transformationMatrix[0], transformationMatrix[5]);
         
         // Check if the slider is being picked up
-        return InputHelper.isTouched(sliderPos, (float) sliderSize.getX(), 
-                (float) sliderSize.getY(), touchLocation);
+        return InputHelper.isTouched(transformationMatrix, touchLocation);
     }
 
     /** {@inheritDocs} */
     @Override
-    public boolean handleDrag(Point2D moveVector) {
+    public boolean handleDrag(FloatPoint2D moveVector) {
         float range = maxValue - minValue;
         float renderWidth = 1 - 2.5f * buttonSize;
         
         moveVector = moveVector.scaleXBy(1 / size);
-        sliderPosition = sliderPosition + (float) moveVector.getX();
+        sliderPosition = sliderPosition + moveVector.getX();
         
         if (sliderPosition < -renderWidth / 2) sliderPosition = -renderWidth / 2;
         if (sliderPosition > renderWidth / 2) sliderPosition = renderWidth / 2;
@@ -219,7 +205,7 @@ public class LabeledSliderBar implements ClickHandler, DragHandler, Renderable {
 
     /** {@inheritDocs} */
     @Override
-    public boolean handleDrop(Point2D dropLocation) {  
+    public boolean handleDrop(FloatPoint2D dropLocation) {  
         float range = maxValue - minValue;
         float renderWidth = 1 - 2.5f * buttonSize;
         

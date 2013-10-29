@@ -15,8 +15,10 @@ import com.rogue.bauble.graphics.textures.Texture;
 import com.rogue.bauble.io.touch.ClickHandler;
 import com.rogue.bauble.io.touch.DragHandler;
 import com.rogue.bauble.io.touch.InputHelper;
+import com.rogue.bauble.io.touch.LongPressHandler;
 import com.rogue.bauble.misc.Constants;
 import com.rogue.bauble.properties.Renderable;
+import com.rogue.unipoint.FloatPoint2D;
 import com.rogue.unipoint.Point2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author R. Matt McCann
  */
-public class DockablePanel implements ClickHandler, DragHandler, Renderable {
+public class DockablePanel implements ClickHandler, DragHandler, LongPressHandler, Renderable {
     /** Backgound VBO of the panel. */
     private final int backgroundVBO;
     
@@ -131,7 +133,7 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
     
     /** {@inheritDocs} */
     @Override
-    public boolean handleClick(MVP transformationSpace, Point2D clickLocation) {
+    public boolean handleClick(MVP transformationSpace, FloatPoint2D clickLocation) {
         float[] modelSpace = transformationSpace.peekCopyM();
         boolean result;
         
@@ -160,17 +162,48 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
     }
     
     /** Interface for extending classes to add click handler functionality. */
-    protected boolean handleClickExt(MVP transformationSpace, Point2D clickLocation) {
+    protected boolean handleClickExt(MVP transformationSpace, FloatPoint2D clickLocation) {
+        return false;
+    }
+    
+    /** {@inheritDocs} */
+    @Override
+    public boolean handleLongPress(MVP transformationSpace, FloatPoint2D pressLocation) {
+        float[] modelSpace = transformationSpace.peekCopyM();
+        boolean result;
+        
+        // Transform into panel space
+        Matrix.translateM(modelSpace, Constants.NO_OFFSET, (float) position.getX(),
+                (float) position.getY(), 0.0f);
+        Matrix.scaleM(modelSpace, Constants.NO_OFFSET, 1 / device.getAspectRatio(), 1.0f, 1.0f);
+        
+        // Transform into background space
+        if (isMirrored) {
+            Matrix.translateM(modelSpace, Constants.NO_OFFSET, 0.5f - contentWidth / 2.0f, 0, 0);
+        } else {
+            Matrix.translateM(modelSpace, Constants.NO_OFFSET, -0.5f + contentWidth / 2.0f, 0, 0);
+        }
+        
+        // Transform into content space
+        Matrix.translateM(modelSpace, Constants.NO_OFFSET, (float) contentPos.getX(), 
+                    (float) contentPos.getY(), 0.0f);
+        
+        // Check if the extending content is clicked
+        transformationSpace.pushM(modelSpace);
+        result = handleLongPressExt(transformationSpace, pressLocation);
+        transformationSpace.popM();
+        
+        return result;
+    }
+    
+    /** Interface for extending classes to handle long press events. */
+    protected boolean handleLongPressExt(MVP transformationSpace, FloatPoint2D pressLocation) {
         return false;
     }
 
     /** {@inheritDocs} */
     @Override
-    public boolean handlePickUp(MVP transformationSpace, Point2D touchLocation) {
-        Point2D adjContentPos;
-        Point2D adjContentSize;
-        Point2D adjustedTabPos;
-        Point2D adjustedTabSize;
+    public boolean handlePickUp(MVP transformationSpace, FloatPoint2D touchLocation) {
         float[] modelSpace = transformationSpace.peekCopyM();
         float[] transformationMatrix;
         
@@ -206,12 +239,9 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
         Matrix.scaleM(modelSpace, Constants.NO_OFFSET, (float) tabSize.getX(),
                 (float) tabSize.getY(), 1);
         transformationMatrix = transformationSpace.collapseM(modelSpace);
-        adjustedTabPos = new Point2D(transformationMatrix[12], transformationMatrix[13]);
-        adjustedTabSize = new Point2D(transformationMatrix[0], transformationMatrix[5]);
-        
+
         // If the tab is picked up
-        if (InputHelper.isTouched(adjustedTabPos, (float) adjustedTabSize.getX(), 
-                (float) adjustedTabSize.getY(), touchLocation)) {
+        if (InputHelper.isTouched(transformationMatrix, touchLocation)) {
             isBeingDragged = true; // Start dragging the panel
             transformationSpace.popM();
             
@@ -233,10 +263,7 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
         // Check if the content is being scrolled
         Matrix.scaleM(modelSpace, Constants.NO_OFFSET, contentWidth, 1.0f, 1.0f);
         transformationMatrix = transformationSpace.collapseM(modelSpace);
-        adjContentPos = new Point2D(transformationMatrix[12], transformationMatrix[13]);
-        adjContentSize = new Point2D(transformationMatrix[0], transformationMatrix[5]);
-        if (InputHelper.isTouched(adjContentPos, (float) adjContentSize.getX(), 
-                (float) adjContentSize.getY(), touchLocation)) {
+        if (InputHelper.isTouched(transformationMatrix, touchLocation)) {
             isBeingScrolled = true;
             return true;
         }
@@ -245,13 +272,13 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
     }
     
     /** Provides an interface for extending classes to handle picking up the content. */
-    protected boolean handlePickUpExt(MVP transformationSpace, Point2D touchLocation) {
+    protected boolean handlePickUpExt(MVP transformationSpace, FloatPoint2D touchLocation) {
         return false;
     }
 
     /** {@inheritDocs} */
     @Override
-    public boolean handleDrag(Point2D moveVector) {
+    public boolean handleDrag(FloatPoint2D moveVector) {
         if (isBeingDragged) { // If the panel itself is being dragged
             position = position.plusX(moveVector.getX());
             
@@ -291,13 +318,13 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
     }
     
     /** Provides an interface for extending classes to handle contents being dragged. */
-    protected boolean handleDragExt(Point2D moveVector) {
+    protected boolean handleDragExt(FloatPoint2D moveVector) {
         return true;
     }
 
     /** {@inheritDocs} */
     @Override
-    public boolean handleDrop(Point2D dropLocation) {
+    public boolean handleDrop(FloatPoint2D dropLocation) {
         // If the panel itself is being dragged and is mirrored
         if (isBeingDragged && isMirrored) { 
             float movementRange = xPosRetracted - xPosExpanded;
@@ -339,7 +366,7 @@ public class DockablePanel implements ClickHandler, DragHandler, Renderable {
     }
     
     /** Provides an interface for extending classes to handle contents being dropped. */
-    protected boolean handleDropExt(Point2D dropLocation) {
+    protected boolean handleDropExt(FloatPoint2D dropLocation) {
         return true;
     }
 

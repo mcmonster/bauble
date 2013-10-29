@@ -29,6 +29,8 @@ public abstract class ProxyActivity extends Activity {
      */
     protected abstract ProxyRenderer getProxyRendererImpl();
     
+    public ProxyView getView() { return view; }
+    
     /** {@inheritDoc} */
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -13,7 +13,7 @@ import com.rogue.bauble.io.touch.ClickHandler;
 import com.rogue.bauble.io.touch.DragHandler;
 import com.rogue.bauble.io.touch.LongPressHandler;
 import com.rogue.bauble.io.touch.ZoomHandler;
-import com.rogue.unipoint.Point2D;
+import com.rogue.unipoint.FloatPoint2D;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
     
     /** {@inheritDocs} */
     @Override
-    public boolean handleClick(MVP transformationSpace, Point2D clickLocation) {
+    public boolean handleClick(MVP transformationSpace, FloatPoint2D clickLocation) {
         if (currentRenderer != null) {
             return currentRenderer.handleClick(transformationSpace, clickLocation);
         }
@@ -68,21 +68,21 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
     
     /** {@inheritDocs} */
     @Override
-    public boolean handleDrag(Point2D moveVector) {
+    public boolean handleDrag(FloatPoint2D moveVector) {
         return currentRenderer.handleDrag(moveVector);
     }
 
     /** {@inheritDocs} */
     @Override
-    public boolean handleDrop(Point2D dropLocation) {
+    public boolean handleDrop(FloatPoint2D dropLocation) {
         return currentRenderer.handleDrop(dropLocation);
     }
     
     /** {@inheritDocs} */
     @Override
-    public boolean handleLongPress(Point2D pressLocation) {
+    public boolean handleLongPress(MVP transformationSpace, FloatPoint2D pressLocation) {
         if (currentRenderer != null) {
-            return currentRenderer.handleLongPress(pressLocation);
+            return currentRenderer.handleLongPress(transformationSpace, pressLocation);
         }
         
         return false;
@@ -90,7 +90,7 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
     
     /** {@inheritDocs} */
     @Override
-    public boolean handlePickUp(MVP transformationSpace, Point2D touchLocation) {
+    public boolean handlePickUp(MVP transformationSpace, FloatPoint2D touchLocation) {
         if (currentRenderer != null) {
             return currentRenderer.handlePickUp(transformationSpace, touchLocation);
         }
