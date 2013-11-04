@@ -10,10 +10,10 @@ public class InputHelper {
     
     public static boolean isTouched(final float[] transformationSpace, 
                                     final FloatPoint2D touchLocation) {
-        float        height   = transformationSpace[0];
+        float        height   = transformationSpace[5];
         FloatPoint2D position = new FloatPoint2D(transformationSpace[12], 
                                                  transformationSpace[13]);
-        float        width    = transformationSpace[5];
+        float        width    = transformationSpace[0];
         
         return isTouched(position, width, height, touchLocation);
     }

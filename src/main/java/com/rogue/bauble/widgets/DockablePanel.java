@@ -20,6 +20,7 @@ import com.rogue.bauble.misc.Constants;
 import com.rogue.bauble.properties.Renderable;
 import com.rogue.unipoint.FloatPoint2D;
 import com.rogue.unipoint.Point2D;
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -263,7 +264,17 @@ public class DockablePanel implements ClickHandler, DragHandler, LongPressHandle
         // Check if the content is being scrolled
         Matrix.scaleM(modelSpace, Constants.NO_OFFSET, contentWidth, 1.0f, 1.0f);
         transformationMatrix = transformationSpace.collapseM(modelSpace);
+        logger.debug("Content Transformation Matrix: " + Arrays.toString(transformationMatrix));
+        logger.debug("Touch Location: " + touchLocation);
+        
+        float        height   = transformationMatrix[0];
+        FloatPoint2D position = new FloatPoint2D(transformationMatrix[12], 
+                                                 transformationMatrix[13]);
+        float        width    = transformationMatrix[5];
+        logger.debug("Size:     " + width + ", " + height);
+        logger.debug("Position: " + position);
         if (InputHelper.isTouched(transformationMatrix, touchLocation)) {
+            logger.debug("Content is being scrolled!");
             isBeingScrolled = true;
             return true;
         }
