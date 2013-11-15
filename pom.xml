@@ -108,6 +108,7 @@
                             <encoding>UTF-8</encoding>
                             <consoleOutput>false</consoleOutput>
                             <failsOnError>false</failsOnError>
+                            <failsOnViolation>false</failsOnViolation>
                             <linkXRef>false</linkXRef>
                         </configuration>
                         <goals>
