@@ -14,7 +14,7 @@ import java.util.Map;
 public class ShaderRegistry {
     private final Map<Shader, Boolean> shaders = new HashMap<Shader, Boolean>();
     
-    public final void activate(final Shader shader) {
+    public void activate(final Shader shader) {
         if (!shaders.get(shader)) {
             GLES20.glUseProgram(shader.getProgramHandle());
             
@@ -26,7 +26,7 @@ public class ShaderRegistry {
         }
     }
     
-    public final void register(final Shader shader) {
+    public void register(final Shader shader) {
         shaders.put(shader, false);
     }
 }

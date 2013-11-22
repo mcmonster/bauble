@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.rogue.bauble.device.Device;
 import com.rogue.bauble.graphics.shaders.SimpleTexturedShader;
-import com.rogue.bauble.graphics.text.BitmapGlyphString.GlyphStringFactory;
+import com.rogue.bauble.graphics.text.GlyphString.GlyphStringFactory;
 import com.rogue.bauble.graphics.textures.Texture;
 
 /**

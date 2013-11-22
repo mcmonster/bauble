@@ -6,8 +6,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.rogue.bauble.graphics.MVP;
 import com.rogue.bauble.graphics.shaders.SimpleTexturedShader;
-import com.rogue.bauble.graphics.text.BitmapGlyphString.GlyphStringFactory;
 import com.rogue.bauble.graphics.text.GlyphString;
+import com.rogue.bauble.graphics.text.GlyphString.GlyphStringFactory;
 import com.rogue.bauble.graphics.textures.Texture;
 import com.rogue.bauble.misc.Constants;
 

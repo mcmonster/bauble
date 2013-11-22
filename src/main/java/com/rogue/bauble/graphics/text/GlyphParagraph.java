@@ -4,7 +4,7 @@ import android.opengl.Matrix;
 import static com.google.common.base.Preconditions.*;
 import com.google.inject.Inject;
 import com.rogue.bauble.graphics.MVP;
-import com.rogue.bauble.graphics.text.BitmapGlyphString.GlyphStringFactory;
+import com.rogue.bauble.graphics.text.GlyphString.GlyphStringFactory;
 import com.rogue.bauble.misc.Constants;
 import com.rogue.bauble.properties.Renderable;
 import com.rogue.unipoint.FloatPoint2D;

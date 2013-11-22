@@ -109,4 +109,8 @@ public abstract class GlyphString implements Renderable {
     }
     
     protected abstract void updateRendering();
+    
+    public interface GlyphStringFactory {
+        GlyphString create();
+    }
 }

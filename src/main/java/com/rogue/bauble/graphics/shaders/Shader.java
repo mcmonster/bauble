@@ -49,8 +49,6 @@ public abstract class Shader {
         this.fragmentShaderSourceID = fragmentShaderSourceID;
         this.registry = registry;
         this.vertexShaderSourceID = vertexShaderSourceID;
-        
-        init();
     }
     
     /**
@@ -174,7 +172,7 @@ public abstract class Shader {
     /**
      * Returns a handle to the requested program.
      */
-    protected final void init() {
+    public void init() {
         registry.register(this);
         
         // Get the source

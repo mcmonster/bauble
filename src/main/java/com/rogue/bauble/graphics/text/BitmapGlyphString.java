@@ -43,10 +43,6 @@ public class BitmapGlyphString extends GlyphString {
         this.view = checkNotNull(view);
     }
     
-    public interface GlyphStringFactory {
-        BitmapGlyphString create();
-    }
-    
     /** {@inheritDocs} */
     @Override
     public void delete() {

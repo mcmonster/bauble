@@ -61,10 +61,10 @@ public class SimpleTexturedShader extends Shader {
     
     /** Guice injectable constructor. */
     @Inject
-    protected SimpleTexturedShader(final Context context,
-                                   @Named("SimpleTexturedFragmentShader") int fragmentShader,
-                                   final ShaderRegistry registry,
-                                   @Named("SimpleTexturedVertexShader") int vertexShader) {
+    public SimpleTexturedShader(final Context context,
+                                @Named("SimpleTexturedFragmentShader") int fragmentShader,
+                                final ShaderRegistry registry,
+                                @Named("SimpleTexturedVertexShader") int vertexShader) {
         super(context, registry, vertexShader, fragmentShader, ATTRIBUTES);
     }
     
