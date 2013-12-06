@@ -10,6 +10,8 @@ import com.rogue.bauble.io.touch.DragHandler;
 import com.rogue.bauble.io.touch.LongPressHandler;
 import com.rogue.bauble.io.touch.ZoomHandler;
 import com.rogue.bauble.misc.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides common rendering work behind the scenes as convenience.
@@ -20,6 +22,9 @@ public abstract class Renderer implements ClickHandler, LongPressHandler,
         DragHandler, ZoomHandler {
     /** Handles the flow of the rendering. */
     private final GameFlowController gameFlowController;
+    
+    /** Interface for logging events. */
+    private final Logger logger = LoggerFactory.getLogger("Renderer");
     
     /** Allows the application to trigger application level events. */
     private final EventBus notifier;
@@ -47,6 +52,8 @@ public abstract class Renderer implements ClickHandler, LongPressHandler,
     
     /** Draws the current frame. */
     public void drawFrame(final MVP mvp) {
+        logger.debug("drawFrame()...");
+        
         // Set up the parameters of the projection matrix
         float near = -1.0f;
         float far = 1.0f;

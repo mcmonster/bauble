@@ -34,6 +34,7 @@ public abstract class ProxyActivity extends Activity {
     /** {@inheritDoc} */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        logger.debug("onCreate()...");
         super.onCreate(savedInstanceState);
         
         // Set the program to full screen
@@ -51,6 +52,7 @@ public abstract class ProxyActivity extends Activity {
     /** {@inheritDoc} */
     @Override
     public final void onPause() {
+        logger.debug("onPause()...");
         super.onPause();
         view.onPause();
     }
@@ -58,7 +60,7 @@ public abstract class ProxyActivity extends Activity {
     /** {@inheritDoc} */
     @Override
     public final void onResume() {
-        logger.info("OnResume called...");
+        logger.debug("OnResume called...");
         super.onResume();
         view.onResume();
     }

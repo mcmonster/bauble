@@ -107,6 +107,8 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
     /** {@inheritDocs} */
     @Override
     public synchronized void onDrawFrame(GL10 arg0) {
+        logger.debug("onDrawFrame()...");
+        
         // Draw the background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         
@@ -132,6 +134,8 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
     /** {@inheritDocs} */
     @Override
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
+        logger.debug("onSurfaceChanged(width=" + width + ", height=" + height + ")...");
+        
         // Set up the view-port
         GLES20.glViewport(0, 0, width, height);
     }
@@ -139,6 +143,7 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
     /** {@inheritDocs} */
     @Override
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
+        logger.debug("onSurfaceCreated()...");
         currentRenderer = onSurfaceCreatedExt();
     }
     
@@ -151,6 +156,7 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
     protected abstract Renderer onSurfaceCreatedExt();
     
     public synchronized void setRenderer(final Renderer renderer) {
+        logger.debug("setRenderer()...");
         currentRenderer.close();
         currentRenderer = renderer;
     }

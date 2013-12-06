@@ -5,6 +5,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controls the update-render flow of the game.
@@ -15,6 +17,9 @@ import com.google.inject.Singleton;
 public class GameFlowController extends Thread {
     /** Whether or not the game flow is running. */
     private boolean isRunning = false;
+    
+    /** Interface for logging events. */
+    private final Logger logger = LoggerFactory.getLogger("GameFlowController");
     
     /** Used to notify interested objects of a rendering event. */
     private final EventBus notifier;
@@ -39,8 +44,6 @@ public class GameFlowController extends Thread {
     @Override
     public void run() {
         int stateUpdatesSinceLastRender;
-        
-        
         isRunning = true; // Set the game loop as running
         
         while (isRunning) { // While the controller has not been shut down
@@ -49,6 +52,7 @@ public class GameFlowController extends Thread {
             long timeLeftInFlow;
             
             // Render a frame
+            logger.debug("Requesting render...");
             renderer.requestRender();
             stateUpdatesSinceLastRender = 0;
             
