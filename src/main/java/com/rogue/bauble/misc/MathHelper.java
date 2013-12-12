@@ -16,4 +16,8 @@ public abstract class MathHelper {
         
         return finalValue;
     }
+    
+    public static boolean isBetween(float source, float min, float max) {
+        return ((min <= source) && (source <= max));
+    }
 }

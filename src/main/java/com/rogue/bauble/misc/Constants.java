@@ -17,4 +17,7 @@ public abstract class Constants {
     
     /** Number of vertices required to render a square. */
     public static final int NUM_VERTICES_PER_SQUARE = 6;
+    
+    /** Conversion factor for converting from radians to degrees. */
+    public static final float RADIANS_TO_DEGREES = 57.2957795f;
 }

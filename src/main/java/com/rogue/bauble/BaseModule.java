@@ -2,13 +2,17 @@ package com.rogue.bauble;
 
 import android.app.Activity;
 import android.content.Context;
+import android.hardware.SensorManager;
+import android.location.LocationManager;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
+import com.google.inject.Provides;
 import com.google.inject.name.Names;
+import com.rogue.bauble.device.SensorMeister;
 import com.rogue.bauble.graphics.textures.Animation;
 import com.rogue.bauble.graphics.textures.Texture;
 import com.rogue.bauble.graphics.textures.TextureFactory;
@@ -67,6 +71,7 @@ public abstract class BaseModule extends AbstractModule {
         bind(ProxyActivity.class).toInstance(renderer.getActivity());
         bind(ProxyRenderer.class).toInstance(renderer);
         bind(ProxyView.class).toInstance(renderer.getView());
+        bind(SensorMeister.class).asEagerSingleton();
         bind(TextureFactory.class).toInstance(textureFactory);
     }
     
@@ -95,6 +100,16 @@ public abstract class BaseModule extends AbstractModule {
             
             bind(Key.get(Texture.class, Names.named(entry.getKey()))).toInstance(texture);
         }
+    }
+    
+    @Provides
+    protected LocationManager provideLocationManager(final Context context) {
+        return (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    }
+    
+    @Provides
+    protected SensorManager provideSensorManager(final Context context) {
+        return (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
     }
 }
 
