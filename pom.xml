@@ -11,7 +11,6 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <platform.version>4.1.1.4</platform.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -22,7 +21,13 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>${platform.version}</version>
+            <version>4.0.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android-gdk</artifactId>
+            <version>0.5</version>
             <scope>provided</scope>
         </dependency>
         

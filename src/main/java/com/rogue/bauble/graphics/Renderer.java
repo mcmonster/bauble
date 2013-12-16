@@ -7,6 +7,7 @@ import com.google.common.eventbus.EventBus;
 import com.rogue.bauble.graphics.flow.GameFlowController;
 import com.rogue.bauble.io.touch.ClickHandler;
 import com.rogue.bauble.io.touch.DragHandler;
+import com.rogue.bauble.io.touch.GlassTouchHandler;
 import com.rogue.bauble.io.touch.LongPressHandler;
 import com.rogue.bauble.io.touch.ZoomHandler;
 import com.rogue.bauble.misc.Constants;
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author R. Matt McCann
  */
 public abstract class Renderer implements ClickHandler, LongPressHandler, 
-        DragHandler, ZoomHandler {
+        DragHandler, GlassTouchHandler, ZoomHandler {
     /** Handles the flow of the rendering. */
     private final GameFlowController gameFlowController;
     
@@ -74,4 +75,12 @@ public abstract class Renderer implements ClickHandler, LongPressHandler,
     protected abstract void drawFrameExt(final MVP mvp);
     
     public EventBus getNotifier() { return notifier; }
+    
+    /** {@inheritDocs} */
+    @Override
+    public boolean handleSwipeLeft() { return false; }
+    
+    /** {@inheritDocs} */
+    @Override
+    public boolean handleSwipeRight() { return false; }
 }

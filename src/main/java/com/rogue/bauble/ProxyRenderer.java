@@ -11,6 +11,7 @@ import com.rogue.bauble.graphics.MVP;
 import com.rogue.bauble.graphics.Renderer;
 import com.rogue.bauble.io.touch.ClickHandler;
 import com.rogue.bauble.io.touch.DragHandler;
+import com.rogue.bauble.io.touch.GlassTouchHandler;
 import com.rogue.bauble.io.touch.LongPressHandler;
 import com.rogue.bauble.io.touch.ZoomHandler;
 import com.rogue.unipoint.FloatPoint2D;
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author R. Matt McCann
  */
 public abstract class ProxyRenderer implements ClickHandler, DragHandler, 
-        GLSurfaceView.Renderer, LongPressHandler, ZoomHandler {
+        GlassTouchHandler, GLSurfaceView.Renderer, LongPressHandler, ZoomHandler {
     /** Activity registered with the Android OS. */
     private final ProxyActivity activity;
     
@@ -96,6 +97,18 @@ public abstract class ProxyRenderer implements ClickHandler, DragHandler,
         }
         
         return false;
+    }
+    
+    /** {@inheritDocs} */
+    @Override
+    public boolean handleSwipeLeft() {
+        return currentRenderer.handleSwipeLeft();
+    }
+    
+    /** {@inheritDocs} */
+    @Override
+    public boolean handleSwipeRight() {
+        return currentRenderer.handleSwipeRight();
     }
     
     /** {@inheritDocs} */

@@ -24,7 +24,7 @@ public class ProxyView extends GLSurfaceView {
     private final Device device;
     
     /** How far the movement action has to drag before being classified as a drag gesture. */
-    private final float dragActivationDistance = 20.0f;
+    private final float dragActivationDistance = 20.0f; 
     
     /** Whether or not the action has been classified as a drag gesture. */
     private boolean isDragAction = false;
